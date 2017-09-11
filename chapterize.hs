@@ -1,6 +1,8 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module ShowFile where
+module Chapterize where
 import System.Console.CmdArgs
+import Text.XML.HXT.Core
+import Text.HandsomeSoup
 
 data ShowFile = ShowFile {file :: Maybe FilePath}
               deriving (Show, Data, Typeable)
@@ -13,4 +15,6 @@ main = do
     contents <- case options of
         ShowFile { file = Nothing } -> getContents
         ShowFile { file = Just f  } -> readFile f
+    links <- runX $ parseHtml contents >>> css "h2" /> getText
     putStr contents
+    mapM_ putStr links
