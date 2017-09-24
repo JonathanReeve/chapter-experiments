@@ -4,7 +4,7 @@ module Chapterize where
 import System.Console.CmdArgs
 import Text.XML.HXT.Core
 import Text.HandsomeSoup
-import Data.Text hiding (map) 
+--import Data.Text hiding (map, filter)
 
 data CLI = CLI {file :: Maybe FilePath}
               deriving (Show, Data, Typeable)
@@ -23,9 +23,10 @@ main = do
     contents <- case options of
         CLI { file = Nothing } -> getContents
         CLI { file = Just f  } -> readFile f
-    links <- runX $ parseHtml contents >>> css "h2" /> getText
-    -- putStr contents
-    -- TODO: strip out whitespace from links. Should be something like this. 
-    -- newlinks <- map strip links
-    -- print links
-    mapM_ putStr links
+    --h1 <- runX $ parseHtml contents >>> css "h1" /> getText
+    --h2 <- runX $ parseHtml contents >>> css "h2" /> getText
+    anames <- runX $ parseHtml contents >>> css "a" >>> getAttrValue "name"
+    --print $ file options 
+    --print h1
+    --print h2
+    print $ filter (/= "") anames
